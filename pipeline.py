@@ -201,6 +201,9 @@ class WgetArgs(object):
             wget_args.append('http://{0}.jux.com/'.format(item_value))
             wget_args.append('http://{0}.jux.com/robots.txt'.format(item_value))
             wget_args.append('http://{0}.jux.com/sitemap.xml'.format(item_value))
+            wget_args.append('http://{0}.jux.com/owner.json'.format(item_value))
+            wget_args.append('http://{0}.jux.com/quarks.json'.format(item_value))
+            wget_args.append('http://{0}.jux.com/quarks.json?per_page=1000000000'.format(item_value))
             
         else:
             raise Exception('Unknown item')
