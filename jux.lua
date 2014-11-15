@@ -75,8 +75,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   local urls = {}
   local html = nil
   local externalsite = false
-  local basedomain = nil
-        
+  local basedomain = "nothing"
+  
   if item_type == "jux" then
     
     if insitemap[url] == true and not string.match(url, item_value.."%.jux%.com") then
