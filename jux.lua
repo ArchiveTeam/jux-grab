@@ -80,7 +80,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       html = read_file(file)
       
       
-      if string.match(url, item_value.."%.jux%.com/[0-9]+[^/%.]") then
+      if string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") and not string.match(url, "%.json") then
         local newurl = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
