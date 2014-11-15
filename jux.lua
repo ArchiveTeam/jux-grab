@@ -167,7 +167,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           end
         end
       end
-      for customurlnf in string.gmatch(html, '"(/[^/][^"]+)"') dolocal base = "http://"..item_value..".jux.com"
+      for customurlnf in string.gmatch(html, '"(/[^/][^"]+)"') do
+        local base = "http://"..item_value..".jux.com"
         local customurl = base..customurlnf
         if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
           table.insert(urls, { url=customurl })
