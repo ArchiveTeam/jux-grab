@@ -81,7 +81,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     
     if insitemap[url] == true and not string.match(url, item_value.."%.jux%.com") then
       externalsite = true
-      local basedomain = string.match(url, "http[s]?://([^/]+)/")
+      basedomain = string.match(url, "http[s]?://([^/]+)/")
     end
     
     if string.match(url, item_value.."%.jux%.com") or externalsite == true then
