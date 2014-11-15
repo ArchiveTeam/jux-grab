@@ -35,7 +35,7 @@ end
 wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_parsed, iri, verdict, reason)
   local url = urlpos["url"]["url"]
   local html = urlpos["link_expect_html"]
-  local parenturl = parent["url"]
+  parenturl = parent["url"]
   local html = nil
   
   if downloaded[url] == true or addedtolist[url] == true then
@@ -73,14 +73,21 @@ end
 wget.callbacks.get_urls = function(file, url, is_css, iri)
   local urls = {}
   local html = nil
+  local externalsite = false
+  local basedomain = nil
         
   if item_type == "jux" then
-    if string.match(url, item_value.."%.jux%.com") then
+    
+    if string.match(parenturl, item_value.."%.jux%.com/sitemap%.xml") and not string.match(url, item_value.."%.jux%.com") then
+      externalsite = true
+      local basedomain = string.match(url, "http[s]?://([^/]+)/")
+    end
+    
+    if string.match(url, item_value.."%.jux%.com") or externalsite == true then
       
       html = read_file(file)
       
-      
-      if string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") and not string.match(url, "%.json") then
+      if (string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") and not string.match(url, "%.json")) or (externalsite == true and string.match(url, basedomain.."/[0-9]+[^/]")) then
         local newurl = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
@@ -88,17 +95,48 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         end
       end
       
-      if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") then
-        local postid = string.match(url, "%.jux%.com/[^/]+/([0-9]+[^/a-zA-Z])")
-        local newurl = "http://"..item_value..".jux.com/"..postid
+      local jsonbase = string.match(url, "(http[s]?://[^/]+/)")
+      local ownerjson = jsonbase.."owner.json"
+      if downloaded[ownerjson] ~= true and addedtolist[ownerjson] ~= true then
+        table.insert(urls, { url=ownerjson })
+        addedtolist[ownerjson] = true
+      end
+      local sitemapxml = jsonbase.."sitemap.xml"
+      if downloaded[sitemapxml] ~= true and addedtolist[sitemapxml] ~= true then
+        table.insert(urls, { url=sitemapxml })
+        addedtolist[sitemapxml] = true
+      end
+      local robotstxt = jsonbase.."robots.txt"
+      if downloaded[robotstxt] ~= true and addedtolist[robotstxt] ~= true then
+        table.insert(urls, { url=robotstxt })
+        addedtolist[robotstxt] = true
+      end
+      local quarksjson1 = jsonbase.."quarks.json"
+      if downloaded[quarksjson1] ~= true and addedtolist[quarksjson1] ~= true then
+        table.insert(urls, { url=quarksjson1 })
+        addedtolist[quarksjson1] = true
+      end
+      local quarksjson2 = jsonbase.."quarks.json?per_page=1000000000"
+      if downloaded[quarksjson2] ~= true and addedtolist[quarksjson2] ~= true then
+        table.insert(urls, { url=quarksjson2 })
+        addedtolist[quarksjson2] = true
+      end
+      
+      
+      if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") or (externalsite == true and string.match(url, basedomain.."/[^/]+/[0-9]+[^/a-zA-Z]")) then
+        local basesite = string.match(url, "http[s]?://([^/]+)/")
+        local postid = string.match(url, "http[s]?://"..basesite.."/[^/]+/([0-9]+[^/a-zA-Z])")
+        local newurl = "http://"..basesite.."/"..postid
         local newpostidjson = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
         end
-        if downloaded[newpostidjson] ~= true and addedtolist[newpostidjson] ~= true then
-          table.insert(urls, { url=newpostidjson })
-          addedtolist[newpostidjson] = true
+        if not string.match(url, "%.json") then
+          if downloaded[newpostidjson] ~= true and addedtolist[newpostidjson] ~= true then
+            table.insert(urls, { url=newpostidjson })
+            addedtolist[newpostidjson] = true
+          end
         end
       end
       
@@ -125,6 +163,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       for customurl in string.gmatch(html, '"(http[s]?://[^"]+)"') do
         if string.match(customurl, item_value.."%.jux%.com")
           or string.match(customurl, "s3%.amazonaws%.com")
+          or string.match(customurl, basedomain)
           or string.match(customurl, "ajax%.googleapies%.com")
           or string.match(customurl, "fonts%.googleapies%.com")
           or string.match(customurl, "fonts%.gstatic%.com")
@@ -152,6 +191,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       for customurlnf in string.gmatch(html, '"//([^"]+)"') do
         if string.match(customurlnf, item_value.."%.jux%.com")
           or string.match(customurlnf, "s3%.amazonaws%.com")
+          or string.match(customurlnf, basedomain)
           or string.match(customurlnf, "ajax%.googleapies%.com")
           or string.match(customurlnf, "fonts%.googleapies%.com")
           or string.match(customurlnf, "fonts%.gstatic%.com")
@@ -171,7 +211,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         end
       end
       for customurlnf in string.gmatch(html, '"(/[^/][^"]+)"') do
-        local base = "http://"..item_value..".jux.com"
+        local base = string.match(url, "http[s]?://([^/]+)/")
         local customurl = base..customurlnf
         if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
           table.insert(urls, { url=customurl })
