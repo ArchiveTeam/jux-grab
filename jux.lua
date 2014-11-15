@@ -79,14 +79,14 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       
       html = read_file(file)
       
-      io.stdout:write("Url "..url.." is being checked for extracting links.  \n")
-      io.stdout:flush()
       
       if string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") then
         local newurl = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
+          io.stdout:write("Url "..newurl.." 1.  \n")
+          io.stdout:flush()
         end
       end
       
@@ -96,6 +96,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
+          io.stdout:write("Url "..customurl.." 2.  \n")
+          io.stdout:flush()
         end
       end
       
@@ -104,6 +106,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
+            io.stdout:write("Url "..customurl.." 3.  \n")
+            io.stdout:flush()
           end
         end
       end
@@ -115,6 +119,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
+            io.stdout:write("Url "..customurl.." 4.  \n")
+            io.stdout:flush()
           end
         end
       end
@@ -137,11 +143,15 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
             if downloaded[newcustomurl] ~= true and addedtolist[newcustomurl] ~= true then
               table.insert(urls, { url=customurl })
               addedtolist[newcustomurl] = true
+              io.stdout:write("Url "..customurl.." 5.  \n")
+              io.stdout:flush()
             end
           elseif string.match(customurl, "http://") then
             if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
               table.insert(urls, { url=customurl })
               addedtolist[customurl] = true
+              io.stdout:write("Url "..customurl.." 6.  \n")
+              io.stdout:flush()
             end
           end
         end
@@ -164,6 +174,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
+            io.stdout:write("Url "..customurl.." 7.  \n")
+            io.stdout:flush()
           end
         end
       end
@@ -173,6 +185,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
           table.insert(urls, { url=customurl })
           addedtolist[customurl] = true
+          io.stdout:write("Url "..customurl.." 8.  \n")
+          io.stdout:flush()
         end
       end
     end
