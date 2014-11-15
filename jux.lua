@@ -49,7 +49,18 @@ wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_pars
   end
   
   if item_type == "jux" and (downloaded[newurl] ~= true or addedtolist[newurl] ~= true) then
-    if string.match(url, item_value.."%.jux%.com") then
+    if string.match(url, item_value.."%.jux%.com")
+      or string.match(url, "s3%.amazonaws%.com")
+      or string.match(url, "ajax%.googleapies%.com")
+      or string.match(url, "fonts%.googleapies%.com")
+      or string.match(url, "fonts%.gstatic%.com")
+      or string.match(url, "api%.mixpanel%.com")
+      or string.match(url, "cdn%.mxpnl%.com")
+      or string.match(url, "js%-agent%.newrelic%.com")
+      or string.match(url, "beacon%-1%.newrelic%.com")
+      or string.match(url, "doubleclick%.net")
+      or string.match(url, "%.cloudfront%.net")
+      or string.match(url, "/assets/") then
       addedtolist[url] = true
       return true
     else
@@ -99,7 +110,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       
       if string.match(url, "http%%3A%%2F%%2F.+") then
         for customurlnf in string.gmatch(url, "(http[s]?%%3A%%2F%%2F.+)") do
-          customurl = string.gsub(string.gsub(customurlnf, "%%3A", ":"), "%%2F", "/")
+          customurln = string.gsub(customurlnf, "%%2F", "/")
+          customurl = string.gsub(customurln, "%%3A", ":")
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
@@ -108,7 +120,18 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       end
       
       for customurl in string.gmatch(html, '"(http[s]?://[^"]+)"') do
-        if string.match(customurl, item_value.."%.jux%.com") then
+        if string.match(customurl, item_value.."%.jux%.com")
+          or string.match(customurl, "s3%.amazonaws%.com")
+          or string.match(customurl, "ajax%.googleapies%.com")
+          or string.match(customurl, "fonts%.googleapies%.com")
+          or string.match(customurl, "fonts%.gstatic%.com")
+          or string.match(customurl, "api%.mixpanel%.com")
+          or string.match(customurl, "cdn%.mxpnl%.com")
+          or string.match(customurl, "js%-agent%.newrelic%.com")
+          or string.match(customurl, "beacon%-1%.newrelic%.com")
+          or string.match(customurl, "doubleclick%.net")
+          or string.match(customurl, "%.cloudfront%.net")
+          or string.match(customurl, "/assets/") then
           if string.match(customurl, "https://") then
             local newcustomurl = string.gsub(customurl, "https://", "http://")
             if downloaded[newcustomurl] ~= true and addedtolist[newcustomurl] ~= true then
@@ -124,7 +147,18 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         end
       end
       for customurlnf in string.gmatch(html, '"//([^"]+)"') do
-        if string.match(customurlnf, item_value.."%.jux%.com") then
+        if string.match(customurlnf, item_value.."%.jux%.com")
+          or string.match(customurlnf, "s3%.amazonaws%.com")
+          or string.match(customurlnf, "ajax%.googleapies%.com")
+          or string.match(customurlnf, "fonts%.googleapies%.com")
+          or string.match(customurlnf, "fonts%.gstatic%.com")
+          or string.match(customurlnf, "api%.mixpanel%.com")
+          or string.match(customurlnf, "cdn%.mxpnl%.com")
+          or string.match(customurlnf, "js%-agent%.newrelic%.com")
+          or string.match(customurlnf, "beacon%-1%.newrelic%.com")
+          or string.match(customurlnf, "doubleclick%.net")
+          or string.match(customurlnf, "%.cloudfront%.net")
+          or string.match(customurlnf, "/assets/") then
           local base = "http://"
           local customurl = base..customurlnf
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
@@ -133,19 +167,16 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           end
         end
       end
-      for customurlnf in string.gmatch(html, '"(/[^/][^"]+)"') do
-        if string.match(customurlnf, item_value.."%.jux%.com") then
-          local base = "http://"..item_value..".jux.com"
-          local customurl = base..customurlnf
-          if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
-            table.insert(urls, { url=customurl })
-            addedtolist[customurl] = true
-          end
+      for customurlnf in string.gmatch(html, '"(/[^/][^"]+)"') dolocal base = "http://"..item_value..".jux.com"
+        local customurl = base..customurlnf
+        if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
+          table.insert(urls, { url=customurl })
+          addedtolist[customurl] = true
         end
       end
     end
   end
-  
+
   return urls
 end
   
