@@ -4,6 +4,7 @@ JSON = (loadfile "JSON.lua")()
 
 local url_count = 0
 local tries = 0
+local externaldomain = "nothing"
 local item_type = os.getenv('item_type')
 local item_value = os.getenv('item_value')
 
@@ -51,6 +52,7 @@ wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_pars
   
   if item_type == "jux" and (downloaded[newurl] ~= true or addedtolist[newurl] ~= true) then
     if string.match(url, item_value.."%.jux%.com")
+      or string.match(url, externaldomain)
       or string.match(url, "s3%.amazonaws%.com")
       or string.match(url, "ajax%.googleapies%.com")
       or string.match(url, "fonts%.googleapies%.com")
@@ -74,21 +76,18 @@ end
 wget.callbacks.get_urls = function(file, url, is_css, iri)
   local urls = {}
   local html = nil
-  local externalsite = false
-  local basedomain = "nothing"
   
   if item_type == "jux" then
     
     if insitemap[url] == true and not string.match(url, item_value.."%.jux%.com") then
-      externalsite = true
-      basedomain = string.match(url, "http[s]?://([^/]+)/")
+      externaldomain = string.match(url, "http[s]?://([^/]+)/")
     end
     
-    if string.match(url, item_value.."%.jux%.com") or externalsite == true then
+    if string.match(url, item_value.."%.jux%.com") or string.match(url, externaldomain) then
       
       html = read_file(file)
       
-      if (string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") and not string.match(url, "%.json")) or (externalsite == true and string.match(url, basedomain.."/[0-9]+[^/]")) then
+      if (string.match(url, item_value.."%.jux%.com/[0-9]+[^/]") or string.match(url, externaldomain.."/[0-9]+[^/]")) and not string.match(url, "%.json") then
         local newurl = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
@@ -124,7 +123,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       end
       
       
-      if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") or (externalsite == true and string.match(url, basedomain.."/[^/]+/[0-9]+[^/a-zA-Z]")) then
+      if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") or string.match(url, externaldomain.."/[^/]+/[0-9]+[^/a-zA-Z]") then
         local basesite = string.match(url, "http[s]?://([^/]+)/")
         local postid = string.match(url, "http[s]?://"..basesite.."/[^/]+/([0-9]+[^/a-zA-Z])")
         local newurl = "http://"..basesite.."/"..postid
@@ -165,7 +164,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       for customurl in string.gmatch(html, '"(http[s]?://[^"]+)"') do
         if string.match(customurl, item_value.."%.jux%.com")
           or string.match(customurl, "s3%.amazonaws%.com")
-          or string.match(customurl, basedomain)
+          or string.match(customurl, externaldomain)
           or string.match(customurl, "ajax%.googleapies%.com")
           or string.match(customurl, "fonts%.googleapies%.com")
           or string.match(customurl, "fonts%.gstatic%.com")
@@ -193,7 +192,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       for customurlnf in string.gmatch(html, '"//([^"]+)"') do
         if string.match(customurlnf, item_value.."%.jux%.com")
           or string.match(customurlnf, "s3%.amazonaws%.com")
-          or string.match(customurlnf, basedomain)
+          or string.match(customurlnf, externaldomain)
           or string.match(customurlnf, "ajax%.googleapies%.com")
           or string.match(customurlnf, "fonts%.googleapies%.com")
           or string.match(customurlnf, "fonts%.gstatic%.com")
@@ -245,7 +244,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     end
   end
   
-  if status_code == 503 and not string.match(url["url"], item_value.."%.jux%.com") then
+  if status_code == 503 and not (string.match(url["url"], item_value.."%.jux%.com") or string.match(url["url"], externaldomain)) then
     return wget.actions.EXIT
   elseif status_code >= 500 or
     (status_code >= 400 and status_code ~= 404 and status_code ~= 403) then
