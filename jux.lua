@@ -97,6 +97,16 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         end
       end
       
+      if string.match(url, "http%%3A%%2F%%2F.+") then
+        for customurlnf in string.gmatch(url, "(http[s]?%%3A%%2F%%2F.+)") do
+          customurl = string.gsub(string.gsub(customurlnf, "%%3A", ":"), "%%2F", "/")
+          if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
+            table.insert(urls, { url=customurl })
+            addedtolist[customurl] = true
+          end
+        end
+      end
+      
       for customurl in string.gmatch(html, '"(http[s]?://[^"]+)"') do
         if string.match(customurl, item_value.."%.jux%.com") then
           if string.match(customurl, "https://") then
