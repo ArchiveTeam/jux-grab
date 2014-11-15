@@ -91,9 +91,14 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") then
         local postid = string.match(url, "%.jux%.com/[^/]+/([0-9]+[^/a-zA-Z])")
         local newurl = "http://"..item_value..".jux.com/"..postid
+        local newpostidjson = url..".json"
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
+        end
+        if downloaded[newpostidjson] ~= true and addedtolist[newpostidjson] ~= true then
+          table.insert(urls, { url=newpostidjson })
+          addedtolist[newpostidjson] = true
         end
       end
       
