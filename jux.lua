@@ -9,6 +9,7 @@ local item_value = os.getenv('item_value')
 
 local downloaded = {}
 local addedtolist = {}
+local insitemap = {}
 
 load_json_file = function(file)
   if file then
@@ -35,7 +36,7 @@ end
 wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_parsed, iri, verdict, reason)
   local url = urlpos["url"]["url"]
   local html = urlpos["link_expect_html"]
-  parenturl = parent["url"]
+  local parenturl = parent["url"]
   local html = nil
   
   if downloaded[url] == true or addedtolist[url] == true then
@@ -78,7 +79,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         
   if item_type == "jux" then
     
-    if string.match(parenturl, item_value.."%.jux%.com/sitemap%.xml") and not string.match(url, item_value.."%.jux%.com") then
+    if insitemap[url] == true and not string.match(url, item_value.."%.jux%.com") then
       externalsite = true
       local basedomain = string.match(url, "http[s]?://([^/]+)/")
     end
@@ -145,6 +146,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
+            insitemap[customurl] = true
           end
         end
       end
