@@ -85,8 +85,6 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
-          io.stdout:write("Url "..newurl.." 1.  \n")
-          io.stdout:flush()
         end
       end
       
@@ -96,8 +94,6 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
-          io.stdout:write("Url "..newurl.." 2.  \n")
-          io.stdout:flush()
         end
       end
       
@@ -106,21 +102,17 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
-            io.stdout:write("Url "..customurl.." 3.  \n")
-            io.stdout:flush()
           end
         end
       end
       
-      if string.match(url, "http%%3A%%2F%%2F.+") then
+      if string.match(url, "http[s]?%%3A%%2F%%2F.+") then
         for customurlnf in string.gmatch(url, "(http[s]?%%3A%%2F%%2F.+)") do
           customurln = string.gsub(customurlnf, "%%2F", "/")
           customurl = string.gsub(customurln, "%%3A", ":")
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
-            io.stdout:write("Url "..customurl.." 4.  \n")
-            io.stdout:flush()
           end
         end
       end
@@ -143,15 +135,11 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
             if downloaded[newcustomurl] ~= true and addedtolist[newcustomurl] ~= true then
               table.insert(urls, { url=customurl })
               addedtolist[newcustomurl] = true
-              io.stdout:write("Url "..customurl.." 5.  \n")
-              io.stdout:flush()
             end
           elseif string.match(customurl, "http://") then
             if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
               table.insert(urls, { url=customurl })
               addedtolist[customurl] = true
-              io.stdout:write("Url "..customurl.." 6.  \n")
-              io.stdout:flush()
             end
           end
         end
@@ -174,8 +162,6 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
             table.insert(urls, { url=customurl })
             addedtolist[customurl] = true
-            io.stdout:write("Url "..customurl.." 7.  \n")
-            io.stdout:flush()
           end
         end
       end
@@ -185,8 +171,6 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         if downloaded[customurl] ~= true and addedtolist[customurl] ~= true then
           table.insert(urls, { url=customurl })
           addedtolist[customurl] = true
-          io.stdout:write("Url "..customurl.." 8.  \n")
-          io.stdout:flush()
         end
       end
     end
