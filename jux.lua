@@ -92,7 +92,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       
       if string.match(url, item_value.."%.jux%.com/[^/]+/[0-9]+[^/a-zA-Z]") then
         local postid = string.match(url, "%.jux%.com/[^/]+/([0-9]+)[^/a-zA-Z]")
-        local newurl = item_value..".jux.com/"..postid
+        local newurl = "http://"..item_value..".jux.com/"..postid
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
           addedtolist[newurl] = true
