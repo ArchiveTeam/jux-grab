@@ -252,9 +252,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     end
   end
   
-  if status_code == 503 and not (string.match(url["url"], item_value.."%.jux%.com") or string.match(url["url"], externaldomain)) then
-    return wget.actions.EXIT
-  elseif status_code == 500 and string.match(url["url"], "/%5C%22http") then
+  if status_code == (503 or 500) and not (string.match(url["url"], item_value.."%.jux%.com") or string.match(url["url"], externaldomain)) then
     return wget.actions.EXIT
   elseif status_code >= 500 or
     (status_code >= 400 and status_code ~= 404 and status_code ~= 403) then
