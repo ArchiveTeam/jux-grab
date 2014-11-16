@@ -95,7 +95,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         end
       end
       
-      if (string.match(url, item_value.."%.jux%.com/[[^/]+/]?[0-9]+[^/]") or string.match(url, externaldomain.."/[[^/]+/]?[0-9]+[^/]")) and not string.match(url, "%?_escaped_fragment_=") then
+      if (string.match(url, item_value.."%.jux%.com") or string.match(url, externaldomain)) and not (string.match(url, "%?_escaped_fragment_=") and string.match(url, "%.json") and string.match(url, "%.txt") and string.match(url, "%.xml") and string.match(url, "%.ico") and string.match(url, "%.png")) then
         local newurl = url.."?_escaped_fragment_="
         if downloaded[newurl] ~= true and addedtolist[newurl] ~= true then
           table.insert(urls, { url=newurl })
